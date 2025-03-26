@@ -44,4 +44,4 @@ volumes:
 networks:
   default:
     name: elk
-    external: true
+    external: True
