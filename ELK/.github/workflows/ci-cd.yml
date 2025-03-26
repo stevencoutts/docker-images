@@ -1,14 +1,21 @@
-name: CI/CD Pipeline
+name: ELK Stack CI/CD Pipeline
 
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'ELK/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'ELK/**'
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ELK
     steps:
       - uses: actions/checkout@v3
       
@@ -31,6 +38,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: lint
+    defaults:
+      run:
+        working-directory: ELK
     steps:
       - uses: actions/checkout@v3
       
