@@ -25,7 +25,10 @@ jobs:
           sudo chmod +x /usr/local/bin/hadolint
       
       - name: Run hadolint
-        run: hadolint Dockerfile*
+        run: |
+          pwd
+          ls -la
+          hadolint .
       
       - name: Install yamllint
         run: |
