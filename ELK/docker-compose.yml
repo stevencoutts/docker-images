@@ -25,6 +25,8 @@ services:
       - ./logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     ports:
       - 5044:5044/tcp # Ensure this port is reachable from Nginx server
+      - 514:514/udp   # Syslog UDP port
+      - 514:514/tcp   # Syslog TCP port
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     platform: linux/amd64
