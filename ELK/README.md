@@ -1,14 +1,20 @@
 # ELK Stack Docker Setup
 
-This repository contains Docker configuration for running the ELK (Elasticsearch, Logstash, Kibana) stack.
+This repository contains Docker configuration for running the ELK (Elasticsearch, Logstash, Kibana) stack, specifically configured for OPNsense log collection and visualization.
 
 ## Components
 
-- Elasticsearch: Search and analytics engine
-- Logstash: Data processing pipeline
-- Kibana: Data visualization dashboard
+- **Elasticsearch** (v7.10.2): Search and analytics engine
+- **Logstash** (v7.10.2): Data processing pipeline
+- **Kibana** (v7.10.2): Data visualization dashboard
 
-## Usage
+## Prerequisites
+
+- Docker and Docker Compose
+- At least 4GB of RAM (8GB recommended)
+- At least 20GB of free disk space
+
+## Quick Start
 
 1. Create the required network:
 ```bash
@@ -18,6 +24,93 @@ docker network create elk
 2. Start the stack:
 ```bash
 docker-compose up -d
+```
+
+3. Access Kibana:
+   - Open http://localhost:5601 in your browser
+   - Default credentials: elastic / changeme (if not configured)
+
+## Configuration
+
+### Elasticsearch
+- Single-node setup
+- Memory settings: 512MB heap
+- Data persistence through Docker volume
+- Port: 9200
+
+### Logstash
+- Syslog input on UDP/TCP port 514
+- Beats input on port 5044
+- Memory settings: 256MB heap
+- Configuration file: `logstash/config/logstash.conf`
+
+### Kibana
+- Web interface on port 5601
+- Security enabled with encryption key
+- Connected to Elasticsearch
+
+## OPNsense Integration
+
+1. Configure OPNsense to send logs:
+   - Go to System → Log Files → Settings
+   - Enable "Send log messages to remote syslog server"
+   - Set remote syslog server to your server's IP
+   - Select facilities to forward (recommended: all)
+
+2. Create Kibana Index Pattern:
+   - Go to Management → Stack Management → Index Patterns
+   - Create index pattern for "syslog-*"
+   - Set time field to "@timestamp"
+
+## Monitoring
+
+- Elasticsearch health: http://localhost:9200/_cluster/health
+- Kibana status: http://localhost:5601/api/status
+
+## Security
+
+- X-Pack security is enabled
+- Encryption key is configured
+- Default ports are exposed
+
+## Maintenance
+
+### Backup
+Elasticsearch data is stored in a Docker volume named `esdata`. To backup:
+```bash
+docker run --rm -v esdata:/source -v $(pwd)/backup:/backup alpine tar czf /backup/elasticsearch_backup.tar.gz -C /source .
+```
+
+### Restore
+To restore from backup:
+```bash
+docker run --rm -v esdata:/target -v $(pwd)/backup:/backup alpine sh -c "cd /target && tar xzf /backup/elasticsearch_backup.tar.gz"
+```
+
+## Troubleshooting
+
+1. Check container logs:
+```bash
+docker logs elasticsearch
+docker logs logstash
+docker logs kibana
+```
+
+2. Common issues:
+   - Memory issues: Adjust ES_JAVA_OPTS and LS_JAVA_OPTS in docker-compose.yml
+   - Network connectivity: Ensure the 'elk' network exists
+   - Kibana connection: Verify Elasticsearch is running and accessible
+
+## Development
+
+### Building from source
+```bash
+docker-compose build
+```
+
+### Testing
+```bash
+docker-compose -f docker-compose.test.yml up
 ```
 
 ## License
