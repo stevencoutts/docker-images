@@ -35,4 +35,4 @@ services:
 networks:
   default:
     name: elk_test
-    external: true 
+    external: true
