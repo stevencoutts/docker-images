@@ -40,6 +40,13 @@ BACKUP_DIR="backup_$(date +'%Y%m%d_%H%M%S')"
 mkdir -p "$BACKUP_DIR"
 cp docker-compose.yml "$BACKUP_DIR/"
 cp -r logstash/config "$BACKUP_DIR/"
+cp -r kibana/config "$BACKUP_DIR/"
+
+# Generate new Kibana configuration if needed
+if [ ! -f "kibana/config/kibana.yml" ]; then
+    log "Generating new Kibana configuration..."
+    ./generate_keys.sh
+fi
 
 # Pull latest images
 log "Pulling latest images..."
