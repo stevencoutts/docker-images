@@ -12,7 +12,7 @@ This repository contains Docker configuration for running the ELK (Elasticsearch
 
 - Docker and Docker Compose
 - At least 4GB of RAM (8GB recommended)
-- At least 20GB of free disk space.
+- At least 20GB of free disk space
 
 ## Quick Start
 
