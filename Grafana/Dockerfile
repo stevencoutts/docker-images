@@ -28,7 +28,7 @@ ENV GF_USERS_ALLOW_SIGN_UP=false
 ENV GF_RENDERING_SERVER_URL=http://grafana-image-renderer:8085/render
 ENV GF_RENDERING_CALLBACK_URL=http://grafana:3000/
 
-# Copy custom configuration if needed
+# Copy custom configuration if needed.
 # COPY grafana.ini /etc/grafana/grafana.ini
 
 # Set the entrypoint
